@@ -31,15 +31,16 @@ end
 lists = `ls #{exec_dir}/schedule`
 lists.split("\n").each do |list|
   xml = Nokogiri::XML(open("http://ch.nicovideo.jp/#{list}/video?rss=2.0"))
-  dir_name = xml.xpath("//dc:creator").text.gsub(/\s/,"_").gsub(/\//,'_').gsub(/_\[/,'[').gsub(/.*「/,'').gsub(/」.*/,'')
 
+  dir_name = xml.xpath("//dc:creator").text.gsub(/\s/,"_").gsub(/\//,'_').gsub(/_\[/,'[').gsub(/.*「/,'').gsub(/」.*/,'')
+  save_dir += '/'+dir_name
   Dir.mkdir(%{#{save_dir}}) unless Dir.exist?(%{#{save_dir}})
+
   xml = xml.xpath("//item").first
   next if xml.nil?
   title = xml.xpath("title").text.gsub(/\s/,"_").gsub(/\//,'_').gsub(/_\[/,'[')
   path = xml.xpath("link").text
 
   next if File.exist?(%{#{save_dir}/#{title}.mp4})
-  #puts %{#{nicovideo_dl} #{path} -u #{mail} -p #{pass} -q -o #{save_dir}/#{title}.mp4}
   system(%{#{nicovideo_dl} #{path} -u #{mail} -p #{pass} -q -o #{save_dir}/#{title}.mp4})
 end
