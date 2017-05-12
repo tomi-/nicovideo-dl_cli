@@ -1,8 +1,10 @@
 require 'open-uri'
 require 'nokogiri'
 
-exec_dir = `pwd`
-exec_dir.rstrip!
+current_file_path = File.expand_path($0)
+current_file_path = current_file_path.split('/')
+current_file_path.pop
+exec_dir = current_file_path.join('/')
 nicovideo_dl = exec_dir+'/nicovideo-dl'
 
 mail = nil
